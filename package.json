@@ -6,10 +6,6 @@
   "dependencies": {
     "deployd": "^0.8.8"
   },
-  "devDependencies": {
-    "eslint": "^2.10.2",
-    "eslint-plugin-riot": "https://github.com/maddes/eslint-plugin-riot/archive/d4025ec92561f7025bc1be7ce17a74288ab4a395.tar.gz"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --ext .js,.es6,.html public/*"
