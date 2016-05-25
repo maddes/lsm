@@ -43,15 +43,16 @@
 
     self.businesses = []
 
-    self.on('update', getList)
+    riot.bus.on('load_home', getList)
 
     function getList() {
+      console.log('getList')
       dpd.businesses.get({$sort: {name: 1}}).then(showList)
     }
 
     function showList(businesses, error) {
+      console.log('showList')
       self.businesses = businesses
-
       self.update()
     }
 
