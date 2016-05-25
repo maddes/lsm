@@ -1,0 +1,37 @@
+<lsm-page-edit>
+
+  <lsm-header title="{ opts.business.name || 'Error...' }" back></lsm-header>
+
+  <p>
+    <textarea name="description">{ opts.business.description }</textarea>
+  </p>
+
+  <p>
+    Contraseña:<br>
+    <input type="password" name="password">
+  </p>
+
+  <p>
+    <button onclick={ save }>Enviar</button>
+    <button onclick={ cancel }>Cancelar</button>
+  </p>
+
+  <script>
+
+    this.save = function () {
+      opts.business.description = this.description.value
+      opts.business.password = this.description.password
+      dpd.businesses.post(opts.business).then(function (business, error) {
+        if (error) return console.log(err)
+        riot.route(opts.business.name)
+      })
+      return false
+    }
+
+    this.cancel = function () {
+      riot.route(opts.business.name)
+    }
+
+  </script>
+
+</lsm-page-edit>

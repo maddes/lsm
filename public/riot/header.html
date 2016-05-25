@@ -1,0 +1,41 @@
+<lsm-header>
+
+  <style scoped>
+    :scope {
+      background-color: #26a69a;
+      width: 100%;
+      display: block;
+    }
+
+    :scope a,
+    :scope h1,
+    :scope div {
+      line-height: 3em;
+      font-size: 1em;
+      margin: 0;
+      padding: 0;
+      color: white;
+      display: inline-block;
+      padding-left: 1em;
+    }
+    :scope div {
+      float: right;
+      padding: 0 1em 0 0;
+    }
+  </style>
+
+  <a href="#/" if={ opts.back != undefined }>❮</a>
+
+  <h1>{ opts.title }</h1>
+  
+  <div>
+    <yield/>
+  </div>
+  
+  <script>
+    this.save = function() {
+      riot.bus.trigger('create') 
+    }
+  </script>
+
+</lsm-header>

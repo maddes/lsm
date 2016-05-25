@@ -1,0 +1,210 @@
+<lsm-page-new>
+
+  <style scoped>
+    :scope button {
+      text-transform: uppercase;
+      border: 1px solid #26a69a;
+      background: #26a69a;
+      border-radius: 3px;
+      color: white;
+      line-height: 2em;
+      padding: 0 1em;
+    }
+    :scope .card {
+      border: 1px solid rgba(0, 0, 0, .1);
+      box-shadow: 0 2px 7px rgba(0, 0, 0, .1);
+      margin: 1em;
+      border-radius: 2px;
+    }
+    :scope .card h2 {
+      padding: 1em 1em 0;
+      margin: 0;
+      font-size: 16px;
+    }
+    :scope .card .actions {
+      border-top: 1px solid #e0e0e0;
+      padding: 1em;
+      text-align: right;
+    }
+    :scope .card .actions button {
+      border: none;
+      background: transparent;
+      color: black;
+    }
+    :scope .card .time {
+      display: flex;
+    }
+    :scope .card .time label {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      border-top: 1px solid #e0e0e0;
+      margin: 0;
+      padding: 1em;
+    }
+    :scope label {
+      display: block;
+      margin: 1em;
+      padding: .5em;
+    }
+    :scope label div {
+      display: block;
+    }
+    :scope label input,
+    :scope label textarea {
+      display: block;
+      top: 2em;
+      border: none;
+      width: 100%;
+      font-size: 1em;
+      line-height: 1.5;
+      font-family: 'PT Sans', sans-serif;
+      font-weight: normal;
+      color: #26a69a;
+    }
+    :scope .week {
+      display: flex;
+      margin: 1em;
+    }
+    :scope .week label {
+      flex: 1;
+      padding: 0;
+      margin: 0;
+    }
+    :scope .week label input {
+      display: none;
+    }
+    :scope .week label div {
+      text-align: center;
+    }
+    :scope .week label input:checked ~ div {
+      background: #26a69a;
+      color: white;
+    }
+  </style>
+
+  <lsm-header title="Nuevo negocio" back>
+    <a onclick={ save }>Guardar</a>
+  </lsm-header>
+
+  <label class="card">
+    Nombre
+    <input name="name" type="text">
+  </label>
+
+  <label class="card">
+    Descripción
+    <textarea name="description"></textarea>
+  </label>
+
+  <label class="card">
+    Dirección
+    <input name="address" type="text">
+  </label>
+
+  <label class="card">
+    Teléfono
+    <input name="phone" type="text">
+  </label>
+
+  <div class="card" each={ schedule in business.schedules }>
+    <div class="week">
+      <label each={ day in schedule.days }>
+        <input type="checkbox" checked={ day.open } onclick={ toggleDay }>
+        <div>{ dayLabels[day.number] }</div>
+      </label>
+    </div>
+
+    <div class="time" each={ time in schedule.times }>
+      <label>
+        <div>Desde</div>
+        <input id="from_hour" type="time" placeholder="Hora" oninput={ setFrom }>
+      </label>
+      <label>
+        <div>Hasta</div>
+        <input id="to_hour" type="time" placeholder="Hora" oninput={ setTo }>
+      </label>
+    </div>
+
+    <div class="actions">
+      <button class="btn" onclick={ addTimes }>Agregar otro horario</button>
+    </div>
+
+  </div>
+
+  <center>
+    <button class="btn" onclick={ addDays }>Agregar otros días</button>
+  </center>
+
+  <script>
+
+    var self = this
+
+    function Week() {
+      var array = []
+
+      for (var i = 0; i < 7; i++) {
+        array.push({
+          number: i,
+          open: false
+        })
+      }
+
+      return array
+    }
+
+    self.business = {
+      schedules: [{
+        days: new Week,
+        times: [{
+          from: '',
+          to: ''
+        }]
+      }]
+    }
+
+    self.dayLabels = ['D','L','M','X','J','V','S']
+
+    self.toggleDay = function (e) {
+      e.item.day.open = e.target.checked
+    }
+
+    self.addDays = function () {
+      self.business.schedules.push({
+        days: new Week,
+        times: [{
+          from: '',
+          to: ''
+        }]
+      })
+    }
+
+    self.addTimes = function (e) {
+      e.item.schedule.times.push({
+        from: '',
+        to: ''
+      })
+    }
+
+    self.setFrom = function (e) {
+      e.item.time.from = e.target.value
+    }
+
+    self.setTo = function (e) {
+      e.item.time.to = e.target.value
+    }
+
+    riot.bus.on('create', save)
+
+    function save() {
+      ['name','description','address','phone'].forEach(function (field) {
+        self.business[field] = self[field].value
+      })
+      if (self.business.name) {
+        dpd.businesses.post(self.business)
+      }
+      riot.route('/')
+    }
+  </script>
+
+</lsm-page-new>

@@ -1,0 +1,128 @@
+<lsm-page-view>
+
+  <style scoped>
+    :scope p {
+      padding: 0 1em;
+    }
+    :scope .card {
+      border: 1px solid rgba(0, 0, 0, .1);
+      box-shadow: 0 2px 7px rgba(0, 0, 0, .1);
+      margin: 1em;
+      border-radius: 2px;
+    }
+    :scope .card h2 {
+      padding: 1em 1em 0;
+      margin: 0;
+      font-size: 16px;
+    }
+  </style>
+
+  <lsm-header title="{ opts.business.name || 'Error...' }" back></lsm-header>
+
+  <p>{ opts.business.description }</p>
+
+  <div class="card" if={ opts.business.schedules.length }>
+    <h2>Horarios</h2>
+    <p each={ schedule in opts.business.schedules }>
+      { days(schedule.days) }
+      { times(schedule.times)}
+    </p>
+  </div>
+
+  <div if={ opts.business.phone } class="card">
+    <h2>Teléfono</h2>
+    <p>{ opts.business.phone }</p>
+  </div>
+
+  <div if={ opts.business.address } class="card">
+    <h2>Dirección</h2>
+    <p>{ opts.business.address }</p>
+  </div>
+
+  <div each={ section in opts.business.sections } class="card">
+    <h2>{ section.title }</h2>
+    <p>{ section.content }</p>
+  </div>
+
+  <script>
+
+    var dayNames = [
+      'Domingos',
+      'Lunes',
+      'Martes',
+      'Miércoles',
+      'Jueves',
+      'Viernes',
+      'Sábados'
+    ]
+
+    dayNames[-1] = 'Osvaldos'
+
+    this.days = function (days) {
+      var week = []
+      days.forEach(function (day) {
+        if (day.open) {
+          week.push(dayNames[day.number])
+        }
+      })
+
+      if (!week.length) {
+        return ''
+      }
+
+      var msg = week.join(', ')
+
+      msg = msg.replace('Domingos, Lunes, Martes, Miércoles, Jueves, Viernes, Sábados',   'Todos los días')
+
+      msg = msg.replace('Domingos, Lunes, Martes, Miércoles, Jueves, Viernes',          'Domingos a Viernes')
+      msg = msg.replace('Domingos, Lunes, Martes, Miércoles, Jueves, Sábados',           'Sábados a Jueves')
+      msg = msg.replace('Domingos, Lunes, Martes, Miércoles, Viernes, Sábados',          'Viernes a Miércoles')
+      msg = msg.replace('Domingos, Lunes, Martes, Jueves, Viernes, Sábados',              'Jueves a Martes')
+      msg = msg.replace('Domingos, Lunes, Miércoles, Jueves, Viernes, Sábados',        'Miércoles a Lunes')
+      msg = msg.replace('Domingos, Martes, Miércoles, Jueves, Viernes, Sábados',          'Martes a Domingos')
+      msg = msg.replace('Lunes, Martes, Miércoles, Jueves, Viernes, Sábados',              'Lunes a Sábados')
+
+      msg = msg.replace('Domingos, Lunes, Martes, Miércoles, Jueves',                   'Domingos a Jueves')
+      msg = msg.replace('Domingos, Lunes, Martes, Miércoles, Sábados',                   'Sábados a Miércoles')
+      msg = msg.replace('Domingos, Lunes, Martes, Viernes, Sábados',                     'Viernes a Martes')
+      msg = msg.replace('Domingos, Lunes, Jueves, Viernes, Sábados',                      'Jueves a Lunes')
+      msg = msg.replace('Domingos, Miércoles, Jueves, Viernes, Sábados',               'Miércoles a Domingos')
+      msg = msg.replace('Martes, Miércoles, Jueves, Viernes, Sábados',                    'Martes a Sábados')
+      msg = msg.replace('Lunes, Martes, Miércoles, Jueves, Viernes',                       'Lunes a Viernes')
+
+      msg = msg.replace('Domingos, Lunes, Martes, Miércoles',                           'Domingos a Miércoles')
+      msg = msg.replace('Domingos, Lunes, Martes, Sábados',                              'Sábados a Martes')
+      msg = msg.replace('Domingos, Lunes, Viernes, Sábados',                             'Viernes a Lunes')
+      msg = msg.replace('Domingos, Jueves, Viernes, Sábados',                             'Jueves a Domingos')
+      msg = msg.replace('Miércoles, Jueves, Viernes, Sábados',                         'Miércoles a Sábados')
+      msg = msg.replace('Martes, Miércoles, Jueves, Viernes',                             'Martes a Viernes')
+      msg = msg.replace('Lunes, Martes, Miércoles, Jueves',                                'Lunes a Jueves')
+
+      msg = msg.replace('Domingos, Lunes, Martes',                                      'Domingos a Martes')
+      msg = msg.replace('Domingos, Lunes, Sábados',                                      'Sábados a Lunes')
+      msg = msg.replace('Domingos, Viernes, Sábados',                                    'Viernes a Domingos')
+      msg = msg.replace('Jueves, Viernes, Sábados',                                       'Jueves a Sábados')
+      msg = msg.replace('Miércoles, Jueves, Viernes',                                  'Miércoles a Viernes')
+      msg = msg.replace('Martes, Miércoles, Jueves',                                      'Martes a Jueves')
+      msg = msg.replace('Lunes, Martes, Miércoles',                                        'Lunes a Miércoles')
+
+      return msg.replaceLast(', ', ' y ')
+
+    }
+
+    this.times = function (times) {
+      var ranges = []
+      times.forEach(function (range) {
+        if (range.from && range.to) {
+          ranges.push(range.from+' a '+range.to)
+        }
+      })
+      if (!ranges.length) {
+        return '';
+      }
+      return 'de '+ranges.join(', ').replaceLast(', ', ' y ')+'.'
+    }
+
+  </script>
+
+</lsm-page-view>

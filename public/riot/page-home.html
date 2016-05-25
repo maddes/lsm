@@ -1,0 +1,60 @@
+<lsm-page-home>
+
+  <style scoped>
+    :scope .list {
+      border: 1px solid rgba(0, 0, 0, .1);
+      box-shadow: 0 2px 7px rgba(0, 0, 0, .1);
+      margin: 1em;
+      border-radius: 2px;
+    }
+    :scope .list a {
+      display: block;
+      transition: .25s;
+      color: #26a69a;
+      padding: .5em 1em;
+      border-bottom: 1px solid #e0e0e0;
+      line-height: 2em;
+    }
+    :scope .list a:hover {
+      background-color: #ddd;
+    }
+    :scope .list a:last-child {
+      border-bottom: none;
+    }
+  </style>
+
+  <lsm-header title="Libertador San Martín"></lsm-header>
+
+  <div class="list">
+    <a each={ business in businesses } href="#/{ business.id }" class="collection-item">
+      { business.name }
+    </a>
+  </div>
+
+  <p>
+    <center>
+      daniel@scholtus.com.ar
+    </center>
+  </p>
+
+  <script>
+
+    var self = this
+
+    self.businesses = []
+
+    self.on('update', getList)
+
+    function getList() {
+      dpd.businesses.get({$sort: {name: 1}}).then(showList)
+    }
+
+    function showList(businesses, error) {
+      self.businesses = businesses
+
+      self.update()
+    }
+
+  </script>
+
+</lsm-page-home>

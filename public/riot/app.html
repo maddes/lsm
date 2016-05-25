@@ -1,0 +1,75 @@
+<lsm-app>
+
+  <lsm-header if={ action == 'load' } title="Cargando..."></lsm-header>
+
+  <lsm-page-home if={ action === 'home' }></lsm-page-home>
+  <lsm-page-view if={ action === 'view' } business={ page }></lsm-page-view>
+  <lsm-page-edit if={ action === 'edit' } business={ page }></lsm-page-edit>
+
+  <lsm-page-new if={ action === 'new' }></lsm-page-new>
+
+
+  <div if={ ['load', 'home', 'view', 'edit', 'new'].indexOf(action) < 0 }>
+    Error.
+  </div>
+
+  <script type="javascript">
+
+    // Component reference
+    var self = this
+
+    // No content for now
+    self.action = 'load'
+    self.page = {}
+
+    // Router
+    riot.route(load)
+
+    function load(id, action) {
+
+      // Set proper action page
+      switch (id) {
+      case 'new':
+        self.action = 'new'
+        break
+      case '':
+        self.action = 'home'
+        break
+      default:
+        self.action = 'load'
+      }
+
+      // Si aplica cargamos la página solicitada
+      self.action == 'load' && dpd.businesses.get(id).then(showBusiness)
+
+      // Update view
+      self.update()
+
+      function showBusiness(business, error) {
+        if (error) {
+          // Application Error
+          self.page = {
+            title: '500',
+            content: 'Error en la aplicación. Sorry.'
+          }
+          self.action = 'load'
+          console.log(error)
+        }
+        else {
+          // Update content or throw 404
+          self.page = business || {
+            title: '404',
+            content: 'Negocio no encontrado.'
+          }
+        }
+
+        // Hide spinner
+        self.action = action || 'view'
+
+        // Update view
+        self.update()
+      }
+    }
+
+  </script>
+</lsm-app>

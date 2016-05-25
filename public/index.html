@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>LSM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    @import url(https://fonts.googleapis.com/css?family=PT+Sans:400,700);
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      padding-bottom: .5em;
+      line-height: 1.5;
+      font-family: 'PT Sans', sans-serif;
+      font-weight: normal;
+      color: rgba(0,0,0,0.87);
+    }
+    a {
+      text-decoration: none;
+    }
+  </style>
+  <script type="text/javascript" src="polyfills.js"></script>
+  <script type="text/javascript" src="dpd.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/riot/2.3/riot+compiler.min.js"></script>
+</head>
+<body>
+
+  <lsm-app></lsm-app>
+
+  <script src="riot/app.html" type="riot/tag"></script>
+  <script src="riot/header.html" type="riot/tag"></script>
+  <script src="riot/page-edit.html" type="riot/tag"></script>
+  <script src="riot/page-view.html" type="riot/tag"></script>
+  <script src="riot/page-home.html" type="riot/tag"></script>
+  <script src="riot/page-new.html" type="riot/tag"></script>
+
+  <script>
+    riot.bus = riot.observable()
+    riot.compile(function() {
+      riot.mount('*')
+      riot.route.start(true)
+    })
+  </script>
+</body>
+</html>
